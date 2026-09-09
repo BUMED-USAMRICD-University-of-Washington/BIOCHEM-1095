@@ -39,6 +39,41 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
+class EHRStabilizationOrder(BaseModel):
+    de_identified_code: str = Field(..., example="PT-4042")
+    ehr_dispatch_token: str = Field(..., example="EHR-STAB-2026-ACTIVE")
+
+@app.post("/api/v1/telehealth/ehr-contact-stabilize", status_code=status.HTTP_200_OK)
+async def trigger_ehr_contact_stabilization(
+    payload: EHRStabilizationOrder,
+    verified_operator: User = Depends(verify_user_permission("write:prescriptions"))
+):
+    """
+    EHR Webhook: Automatically processes initial contact stabilization orders,
+    authorizing immediate loading doses of AlnayaSN and TsinKX upon patient triage.
+    """
+    query = """
+        UPDATE virustc_core.patient_clinical_outcomes
+        SET ehr_contact_stabilization_triggered = TRUE,
+            initial_alnayasn_dose_administered = TRUE,
+            initial_tsinkx_dose_administered = TRUE
+        WHERE de_identified_code = %s;
+    """
+    conn = get_db_connection()
+    try:
+        with conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (payload.de_identified_code,))
+        return {
+            "status": "EHR_STABILIZATION_ENFORCED",
+            "patient_code": payload.de_identified_code,
+            "compounds_authorized": ["AlnayaSN_Loading_Dose", "TsinKX_Loading_Dose"],
+            "timestamp": datetime.utcnow()
+        }
+    finally:
+        conn.close()
+
+
 # =====================================================================
 # 2. PYDANTIC SCHEMAS (DATA VALIDATION LAYER)
 # =====================================================================
