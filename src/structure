@@ -1,0 +1,27 @@
+SET search_path TO virustc_core, public;
+
+-- =====================================================================
+-- EXTEND PATIENT CLINICAL OUTCOMES WITH EMERGENCY CONTACT STABILIZATION
+-- =====================================================================
+ALTER TABLE virustc_core.patient_clinical_outcomes 
+ADD COLUMN IF NOT EXISTS ehr_contact_stabilization_triggered BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS initial_alnayasn_dose_administered BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS initial_tsinkx_dose_administered BOOLEAN DEFAULT FALSE;
+
+-- =====================================================================
+-- UPDATE SAFETY VIEW TO ENSURE STABILIZATION COMPLIANCE
+-- =====================================================================
+CREATE OR REPLACE VIEW virustc_core.v_acute_latency_compliance_breaches AS
+SELECT 
+    pco.de_identified_code,
+    pco.primary_specialty_track,
+    pco.treatment_route_delivery,
+    pco.expected_latency_months,
+    pco.ehr_contact_stabilization_triggered,
+    pco.initial_alnayasn_dose_administered,
+    pco.initial_tsinkx_dose_administered,
+    pco.clinical_disposition
+FROM virustc_core.patient_clinical_outcomes pco
+WHERE pco.primary_specialty_track = 'Regenerative Medicine'
+  -- Flags a breach if a patient is routed to slow care or missed their critical initial contact doses
+  AND (pco.treatment_route_delivery = 'PO_ND' OR pco.initial_alnayasn_dose_administered = FALSE OR pco.initial_tsinkx_dose_administered = FALSE);
