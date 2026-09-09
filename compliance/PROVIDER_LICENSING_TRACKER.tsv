@@ -1,0 +1,5 @@
+Provider_NPI	Provider_Name	Home_State	Licensed_Target_States	Compact_License_Active	Expiration_Date	DEA_Registration_Status	Credentialing_Status
+1093882711	Dr. Hofstad	WA	WA, CA, OR, ID	TRUE	2027-11-15	Active_Schedule_II-V	APPROVED
+1445210928	Dr. Consult_A	CA	CA, NV, AZ	TRUE	2027-04-20	Active_Schedule_IV-V	APPROVED
+1851229304	Dr. Consult_B	NY	NY, NJ, PA, MA	FALSE	2026-12-31	Limited_Consultative	PENDING_RENEWAL
+1223940511	Dr. Resident_A	WA	WA	FALSE	2027-06-30	Institutional_Only	UNDER_SUPERVISION

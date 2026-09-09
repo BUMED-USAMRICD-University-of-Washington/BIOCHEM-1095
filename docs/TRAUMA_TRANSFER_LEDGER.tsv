@@ -1,0 +1,4 @@
+Transfer_ID	Encounter_Ref	Discharge_Hub	Receiving_Facility	Bio_Isolation_Unit_Status	Airway_Stability	Telemetry_Link	Transfer_Signoff
+TR-2026-901	VTC-TELE-4401	Yesler Towers (Remote)	UW Harborview Trauma	SECURED_LEVEL_C	STABLE_ROOM_AIR	ACTIVE_CELLULAR	Hofstad_MD
+TR-2026-902	VTC-TELE-4402	Yesler Towers (Remote)	UW Harborview Trauma	SECURED_LEVEL_C	INTUBATED_VENT	ACTIVE_CELLULAR	QA_Auth_1
+TR-2026-903	VTC-TELE-4403	Yesler Towers (Remote)	Regional Trauma Center	PENDING_CONTAIN	STABLE_ROOM_AIR	LINK_ESTABLISHING	HOLD_REVISE
