@@ -6,6 +6,45 @@ from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException, Depends, status, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
+import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+# Retrieve the runtime environment variable string provided by the Docker stack
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://vtc_admin:SecureCryptoPass2026@localhost:5432/virustc_compliance")
+
+def get_db_connection():
+    """
+    Establishes and returns a connection handle to the transactional storage matrix.
+    Ensures safe, atomic cross-schema operational mapping.
+    """
+    try:
+        conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
+        return conn
+    except Exception as e:
+        print(f"[DATABASE CONNECTION ERROR] System failed to lock to relational host: {e}")
+        raise HTTPException(status_code=500, detail="Database connection boundary failed.")
+
+def db_execute_quarantine(lot_number: str):
+    """
+    Executes an atomic database transaction modifying the product tracking matrix layout
+    to enforce hard quarantine isolation states.
+    """
+    query = """
+        UPDATE virustc_core.product_lots
+        SET contaminant_screening_status = 'QUARANTINED_RADIUS_TRIGGER'
+        WHERE lot_number = %s;
+    """
+    conn = get_db_connection()
+    try:
+        with conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (lot_number,))
+                print(f"[SQL TRANSACTION EXECUTED] Lot {lot_number} status updated to QUARANTINED in database.")
+    except Exception as e:
+        print(f"[DATABASE TRANSACTION FAILURE] Automated quarantine lock failed for lot {lot_number}: {e}")
+    finally:
+        conn.close()
 
 # Create the core application instance matching the VirusTC infrastructure
 app = FastAPI(
