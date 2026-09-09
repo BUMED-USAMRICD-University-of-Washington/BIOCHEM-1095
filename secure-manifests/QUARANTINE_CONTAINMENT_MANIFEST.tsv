@@ -1,0 +1,4 @@
+Manifest_ID	Isolate_Code	Biological_Safety_Level	Origin_Facility	Target_Receiving_Facility	Transit_Vehicle_ID	Quarantine_Status	Authorized_Signoff_NPI
+QCM-2026-001	VIR-DNG-02	BSL-3	Yesler Towers (Remote)	UW Harborview Trauma	AMB-CCT-09	RELEASED_TO_TRAUMA	1093882711
+QCM-2026-002	VIR-EBO-05	BSL-4	Field Unit Alpha	USAMRICD Isolation	MIL-C130-44	ACTIVE_QUARANTINE	1445210928
+QCM-2026-003	VIR-LAS-07	BSL-3	Regional Clinic East	UW Harborview Trauma	AMB-CCT-12	PENDING_SCREENING	1851229304
