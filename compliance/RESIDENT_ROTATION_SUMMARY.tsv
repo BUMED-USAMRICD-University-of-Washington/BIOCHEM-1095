@@ -1,0 +1,4 @@
+Rotation_ID	Resident_Name	Affiliated_Institution	Specialty_Track	Completed_Encounters	Supervising_Attending_NPI	Total_Validated_Hours	Milestone_Status
+RES-2026-01	Dr. Vance	University of Washington	Naturopathic Oncology	45	1093882711	80.0	APPROVED_CREDIT
+RES-2026-02	Dr. Chen	KU School of Medicine	Pathology Diagnostics	32	1093882711	60.0	IN_PROGRESS
+RES-2026-03	Dr. Patel	Seattle Bio-Med PostDoc	Regenerative Transport	12	1445210928	30.0	PENDING_REVIEW
