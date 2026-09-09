@@ -1,0 +1,4 @@
+audit_id	username	system_role	request_method	endpoint_path	sql_action_type	client_ip	lot_number_context	execution_timestamp	status_code
+108821	vtc_command_admin	ATTENDING_PHYSICIAN	POST	/api/v1/webhooks/exposure-alert	INSERT	192.168.10.44	VND-1600-01	2026-09-09T13:14:02Z	200
+108822	student_reviewer_02	MEDICAL_STUDENT	POST	/api/v1/webhooks/exposure-alert	INSERT	192.168.10.91	ECT-02OZ-09	2026-09-09T13:14:15Z	403
+108823	UNAUTHENTICATED	UNKNOWN	GET	/api/v1/logistics/inventory-status	READ	64.233.160.10	NULL		2026-09-09T13:14:22Z	410
