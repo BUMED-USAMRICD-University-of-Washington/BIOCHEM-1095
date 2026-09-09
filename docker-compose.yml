@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Core FastAPI Automation Engine
+  api_service:
+    build: .
+    container_name: virustc-automation-engine
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://vtc_admin:SecureCryptoPass2026@postgres_db:5432/virustc_compliance
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    restart: always
+
+  # Relational Database Storage Engine Layer
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: virustc-relational-storage
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=vtc_admin
+      - POSTGRES_PASSWORD=SecureCryptoPass2026
+      - POSTGRES_DB=virustc_compliance
+    volumes:
+      - vtc_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vtc_admin -d virustc_compliance"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  vtc_db_data:
