@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VirusTC Telemetry & Surveillance Control Deck</title>
+    <!-- Configure standard Maps API library inclusions -->
+    <script src="https://googleapis.com" async defer></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 30px; background-color: #fcfcfc; color: #222; }
+        .map-frame { width: 100%; height: 500px; margin-top: 10px; margin-bottom: 30px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .control-status-panel { padding: 15px; background-color: #f0f4f8; border-left: 5px solid #1a5f7a; border-radius: 4px; margin-bottom: 25px; }
+        h1, h3 { color: #1a5f7a; }
+    </style>
+</head>
+<body>
+
+    <h1>VirusTC Interactive Command Interface</h1>
+    <div class="control-status-panel">
+        <strong>Telemetry Monitor Link:</strong> <span id="telemetryState">Awaiting Data Ingestion Streaming Core...</span>
+    </div>
+
+    <h3>Unified Layer 1 & 2: Real-Time Integrated Surveillance System</h3>
+    <p>Displays combined arrays of local vector exposure zones, human containment pathways, and rolling positions of cellular transport trucks.</p>
+    <div id="unifiedCommandMap" class="map-frame"></div>
+
+    <script>
+        let commandMap;
+        const serverEndpoint = "http://127.0.0";
+
+        async function initSystemCommand() {
+            // Instantiate the main visual map centered around the Pacific Northwest operational center
+            commandMap = new google.maps.Map(document.getElementById('unifiedCommandMap'), {
+                zoom: 5,
+                center: { lat: 44.0, lng: -110.0 },
+                styles: [{ featureType: "administrative", elementType: "labels", stylers: [{ visibility: "on" }] }]
+            });
+
+            // Call the microservice routes sequentially to populate data arrays dynamically
+            try {
+                // 1. Fetch and process the Vector Exposure elements
+                const vectorResponse = await fetch(`${serverEndpoint}/maps/vector-exposure`);
+                const vectorData = await vectorResponse.json();
+                vectorData.forEach(item => {
+                    new google.maps.Marker({
+                        position: { lat: item.lat, lng: item.lng },
+                        map: commandMap,
+                        title: `CRITICAL EXPOSURE: ${item.description}`,
+                        icon: 'http://google.com'
+                    });
+                });
+
+                // 2. Fetch and process the Human Transmission and Tracking parameters
+                const transitResponse = await fetch(`${serverEndpoint}/maps/human-transmission`);
+                const transitData = await transitResponse.json();
+                transitData.forEach(item => {
+                    new google.maps.Marker({
+                        position: { lat: item.lat, lng: item.lng },
+                        map: commandMap,
+                        title: `ROUTE ELEMENT: ${item.description}`,
+                        icon: 'http://google.com'
+                    });
+                });
+
+                // 3. Initiate continuous tracking loops to fetch cell telemetry streams every 3000ms
+                setInterval(pollCellularVaultTelemetry, 3000);
+
+            } catch (err) {
+                console.error("System Interface sync failed or server offline: ", err);
+                document.getElementById('telemetryState').innerText = "OFFLINE LINK - Running Mock Simulation Buffers.";
+            }
+        }
+
+        async function pollCellularVaultTelemetry() {
+            try {
+                // Query inventory and operational telemetry systems concurrently
+                const logResponse = await fetch(`${serverEndpoint}/logistics/inventory-status`);
+                const inventory = await logResponse.json();
+                
+                // Track dynamic telemetry data changes visually on the UI
+                document.getElementById('telemetryState').innerHTML = `
+                    <strong>System Active.</strong> Lot VND-1600-01 Status: 
+                    <span style="color: ${inventory["VND-1600-01"].status === 'QUARANTINED' ? 'red' : 'green'}">
+                        ${inventory["VND-1600-01"].status}
+                    </span>
+                `;
+            } catch (e) {
+                console.log("Telemetry streaming sync step dropped.");
+            }
+        }
+    </script>
+</body>
+</html>
