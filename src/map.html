@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VirusTC Geographic Surveillance Engine</title>
+    <!-- Replace YOUR_API_KEY with an authorized Google Maps API Key -->
+    <script src="https://googleapis.com" async defer></script>
+    <style>
+        .map-container { width: 100%; height: 400px; margin-bottom: 20px; border: 1px solid #ccc; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>Layer 1: Environmental Vector Exposure Incident Tracker</h2>
+    <div id="vectorMap" class="map-container"></div>
+
+    <h2>Layer 2: Secondary Human Transit & Inter-Facility Transfer Map</h2>
+    <div id="transmissionMap" class="map-container"></div>
+
+    <script>
+        // Mock Data Matrix pulled from Level 1 and Level 2 relational data layers
+        const vectorIncidents = [
+            { lat: 47.604, lng: -122.329, label: "Incident V-991: Soft-Tissue Trauma Node" },
+            { lat: 34.052, lng: -118.243, label: "Incident V-992: Coastal Containment Zone" }
+        ];
+
+        const humanTransmissions = [
+            { lat: 40.712, lng: -74.006, label: "Transfer T-401: Secondary Monitoring Site" },
+            { lat: 29.951, lng: -90.071, label: "Transfer T-402: Clinical Isolation Intake" }
+        ];
+
+        function initMaps() {
+            // Instantiate Map 1: Environmental Vector Layer
+            const map1 = new google.maps.Map(document.getElementById('vectorMap'), {
+                zoom: 4,
+                center: { lat: 39.8283, lng: -98.5795 }, // Centralized baseline coordinate
+                styles: [{ featureType: "all", elementType: "labels", stylers: [{ visibility: "on" }] }]
+            });
+
+            // Populate Map 1 Markers
+            vectorIncidents.forEach(pos => {
+                new google.maps.Marker({
+                    position: { lat: pos.lat, lng: pos.lng },
+                    map: map1,
+                    title: pos.label,
+                    icon: 'http://google.com'
+                });
+            });
+
+            // Instantiate Map 2: Human Transmission / Transfer Layer
+            const map2 = new google.maps.Map(document.getElementById('transmissionMap'), {
+                zoom: 4,
+                center: { lat: 39.8283, lng: -98.5795 },
+                styles: [{ featureType: "all", elementType: "labels", stylers: [{ visibility: "on" }] }]
+            });
+
+            // Populate Map 2 Markers
+            humanTransmissions.forEach(pos => {
+                new google.maps.Marker({
+                    position: { lat: pos.lat, lng: pos.lng },
+                    map: map2,
+                    title: pos.label,
+                    icon: 'http://google.com'
+                });
+            });
+        }
+    </script>
+</body>
+</html>
